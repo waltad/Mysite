@@ -1,7 +1,12 @@
-from django.db.models import Model, CharField, SlugField, ForeignKey, CASCADE, TextField, DateTimeField
+from django.db.models import Model, CharField, SlugField, ForeignKey, CASCADE, TextField, DateTimeField, Manager
 from django.utils import timezone
 from django.contrib.auth.models import User
 # Create your models here.
+
+
+class PublishedManager(Manager):
+    def get_queryset(self):
+        return super(PublishedManager, self).get_queryset().filter(status='published')
 
 
 class Post(Model):
@@ -15,9 +20,11 @@ class Post(Model):
     update = DateTimeField(auto_now=True)
     status = CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
 
+    objects = Manager()  # Menadżer domyślny
+    published = PublishedManager()  # Menadżer niestandardowy
+
     class Meta:
         ordering = ('-publish',)
 
     def __str__(self):
         return self.title
-
