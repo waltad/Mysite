@@ -1,6 +1,7 @@
 from django.db.models import Model, CharField, SlugField, ForeignKey, CASCADE, TextField, DateTimeField, Manager
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.urls import reverse
 # Create your models here.
 
 
@@ -28,3 +29,9 @@ class Post(Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_urls(self):
+        return reverse('blog:post_detail', args=[self.publish.year,
+                                                 self.publish.strftime('%m'),
+                                                 self.publish.strftime('%d'),
+                                                 self.slug])
